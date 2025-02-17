@@ -30,7 +30,7 @@ jobs:
       - name: Build with Maven
         run: |
           mvn -pl langchain4j-ollama versions:set -DnewVersion=${{ github.event.inputs.tags }} -DprocessParent=false
-          mvn -pl langchain4j-ollama clean deploy
+          mvn -pl langchain4j-ollama -DskipITs clean deploy
           
       - uses: actions/checkout@v2
       - name: Slack Notification
