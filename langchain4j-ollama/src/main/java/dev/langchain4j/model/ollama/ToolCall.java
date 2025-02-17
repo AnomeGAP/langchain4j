@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
+import java.util.Optional;
+
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -12,12 +14,20 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 class ToolCall {
 
+    private Optional<String> id;
+
     private FunctionCall function;
 
     ToolCall() {
     }
 
     ToolCall(FunctionCall function) {
+        this.id = Optional.empty();
+        this.function = function;
+    }
+
+    ToolCall(Optional<String> id, FunctionCall function) {
+        this.id = id;
         this.function = function;
     }
 
@@ -25,8 +35,14 @@ class ToolCall {
         return new Builder();
     }
 
+    public Optional<String> getId() { return id; }
+
     public FunctionCall getFunction() {
         return function;
+    }
+
+    public void setId(String id) {
+        this.id = Optional.of(id);
     }
 
     public void setFunction(FunctionCall function) {
@@ -35,7 +51,14 @@ class ToolCall {
 
     static class Builder {
 
+        private Optional<String> id = Optional.empty();
+
         private FunctionCall function;
+
+        Builder id(String id) {
+            this.id = Optional.of(id);
+            return this;
+        }
 
         Builder function(FunctionCall function) {
             this.function = function;
@@ -43,7 +66,7 @@ class ToolCall {
         }
 
         ToolCall build() {
-            return new ToolCall(function);
+            return new ToolCall(id, function);
         }
     }
 }

@@ -5,10 +5,7 @@ import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.data.message.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -100,7 +97,17 @@ class OllamaMessagesUtils {
                             }).collect(Collectors.toList()))
                     .orElse(null);
 
+        } else if (ChatMessageType.TOOL_EXECUTION_RESULT == chatMessage.type()) {
+            ToolExecutionResultMessage resultMessage = (ToolExecutionResultMessage) chatMessage;
+            FunctionCall functionCall = FunctionCall.builder()
+                    .name(resultMessage.toolName())
+                    .build();
+            ToolCall toolCall = ToolCall.builder()
+                    .id(resultMessage.id())
+                    .function(functionCall).build();
+            toolCalls = Collections.singletonList(toolCall);
         }
+
         return Message.builder()
                 .role(toOllamaRole(chatMessage.type()))
                 .content(chatMessage.text())
