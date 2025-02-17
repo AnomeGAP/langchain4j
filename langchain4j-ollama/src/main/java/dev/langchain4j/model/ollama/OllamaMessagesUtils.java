@@ -93,7 +93,9 @@ class OllamaMessagesUtils {
                                         .arguments(toObject(toolExecutionRequest.arguments(), typeReference))
                                         .build();
                                 return ToolCall.builder()
-                                        .function(functionCall).build();
+                                        .function(functionCall)
+                                        .id(toolExecutionRequest.id())
+                                        .build();
                             }).collect(Collectors.toList()))
                     .orElse(null);
 
